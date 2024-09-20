@@ -19,6 +19,12 @@ inputs:
     description: >-
       ssh keypair name
     required: false
+  runners-per-machine:
+    description: number of runners per machine
+    required: false
+  number-of-machines:
+    description: number of machines
+    required: false
   ec2-image-id:
     description: >-
       EC2 Image Id (AMI). The new runner will be launched from this image.
@@ -47,10 +53,10 @@ inputs:
       The label is used to remove the runner from GitHub when the runner is not needed anymore.
       This input is required if you use the 'stop' mode.
     required: false
-  ec2-instance-id:
+  ec2-instances-ids:
     description: >-
-      EC2 Instance Id of the created runner.
-      The id is used to terminate the EC2 instance when the runner is not needed anymore.
+      EC2 Instances Ids of the created runners.
+      The ids are used to terminate the EC2 instances when the runner is not needed anymore.
       This input is required if you use the 'stop' mode.
     required: false
   iam-role-name:
@@ -81,10 +87,10 @@ outputs:
       The label is used in two cases:
       - to use as the input of 'runs-on' property for the following jobs;
       - to remove the runner from GitHub when it is not needed anymore.
-  ec2-instance-id:
+  ec2-instances-ids:
     description: >-
-      EC2 Instance Id of the created runner.
-      The id is used to terminate the EC2 instance when the runner is not needed anymore.
+      EC2 Instances Ids of the created runners.
+      The ids are used to terminate the EC2 instance when the runner is not needed anymore.
 runs:
   using: node20
   main: ./dist/index.js

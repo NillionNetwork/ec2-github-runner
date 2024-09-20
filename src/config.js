@@ -3,16 +3,22 @@ const github = require('@actions/github');
 
 class Config {
   constructor() {
+    const numberOfMachines = core.getInput('number-of-machines') ? parseInt(core.getInput('number-of-machines')) : 1
+    const runnersPerMachine =  core.getInput('runners-per-machine') ? parseInt( core.getInput('runners-per-machine')) : 1;
+    const ec2InstancesIds = core.getInput('ec2-instances-ids') ? JSON.parse(core.getInput('ec2-instances-ids')) : null;
+
     this.input = {
       mode: core.getInput('mode'),
       githubToken: core.getInput('github-token'),
       keyName: core.getInput('key-name'),
+      runnersPerMachine,
+      numberOfMachines,
       ec2ImageId: core.getInput('ec2-image-id'),
       ec2InstanceType: core.getInput('ec2-instance-type'),
       subnetId: core.getInput('subnet-id'),
       securityGroupId: core.getInput('security-group-id'),
       label: core.getInput('label'),
-      ec2InstanceId: core.getInput('ec2-instance-id'),
+      ec2InstancesIds,
       iamRoleName: core.getInput('iam-role-name'),
       runnerHomeDir: core.getInput('runner-home-dir'),
       preRunnerScript: core.getInput('pre-runner-script'),
@@ -49,7 +55,7 @@ class Config {
         throw new Error(`Not all the required inputs are provided for the 'start' mode`);
       }
     } else if (this.input.mode === 'stop') {
-      if (!this.input.label || !this.input.ec2InstanceId) {
+      if (!this.input.label || !this.input.ec2InstancesIds) {
         throw new Error(`Not all the required inputs are provided for the 'stop' mode`);
       }
     } else {
