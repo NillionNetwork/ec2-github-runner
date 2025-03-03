@@ -94,7 +94,7 @@ async function startEc2Instance(label, githubRegistrationToken) {
 }
 
 async function terminateEc2Instances() {
-  const ec2 = new AWS.EC2();
+  const ec2 = new EC2Client();
 
   const params = {
     InstanceIds: config.input.ec2InstancesIds,
@@ -110,18 +110,27 @@ async function terminateEc2Instances() {
 }
 
 async function waitForInstancesRunning(ec2InstancesIds) {
-  const ec2 = new AWS.EC2();
-
-  const params = {
-    InstanceIds: ec2InstancesIds,
-  };
-
+  const ec2 = new EC2Client();
   try {
-    await ec2.waitFor('instanceRunning', params).promise();
-    core.info(`AWS EC2 instances ${ec2InstancesIds.join(" ")} is up and running`);
+    core.info(`Checking for instances ${ec2InstancesIds.join(", ")} to be up and running`);
+    await waitUntilInstanceRunning(
+      {
+        client: ec2,
+        maxWaitTime: 300,
+      }, {
+      Filters: [
+        {
+          Name: 'instance-id',
+          Values: ec2InstancesIds,
+        },
+      ],
+    });
+
+    core.info(`AWS EC2 instances ${ec2InstancesIds.join(", ")} are up and running`);
+    return;
   } catch (error) {
-    core.error(`AWS EC2 instances ${ec2InstancesIds.join(" ")} initialization error`);
-    throw error
+    core.error(`AWS EC2 instances ${ec2InstancesIds.join(", ")} initialization error`);
+    throw error;
   }
 }
 
