@@ -80,7 +80,7 @@ async function startEc2Instance(label, githubRegistrationToken) {
   try {
     const instances = [];
     for (let idx = 0; idx < config.input.numberOfMachines; idx++) {
-      const result = await ec2.runInstances(params).promise();
+      const result = await ec2.send(new RunInstancesCommand(params));
       const ec2InstanceId = result.Instances[0].InstanceId;
       instances.push(ec2InstanceId);
       core.info(`AWS EC2 instance ${ec2InstanceId} is started`);
@@ -100,7 +100,7 @@ async function terminateEc2Instances() {
   };
   core.error(`Terminating Ec2 instances ${config.input.ec2InstancesIds.join(" ")}`);
   try {
-    await ec2.terminateInstances(params).promise();
+    await ec2.send(new TerminateInstancesCommand(params));
     core.info(`AWS EC2 instances ${config.input.ec2InstancesIds.join(" ")} is terminated`);
   } catch (error) {
     core.error(`AWS EC2 instance ${config.input.ec2InstancesIds} termination error: ${error}`);
