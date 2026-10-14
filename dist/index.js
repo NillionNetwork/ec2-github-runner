@@ -148368,7 +148368,7 @@ const core = __nccwpck_require__(7484);
 const config = __nccwpck_require__(1283);
 
 // User data scripts are run as the root user
-function buildUserDataScript(githubRegistrationToken, label, idx) {
+function buildUserDataScript(githubRegistrationToken, label) {
   if (config.input.runnerHomeDir) {
     // If runner home directory is specified, we expect the actions-runner software (and dependencies)
     // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
@@ -148435,7 +148435,6 @@ async function startEc2Instance(label, githubRegistrationToken) {
     UserData: Buffer.from(userData).toString('base64'),
     SubnetId: config.input.subnetId,
     SecurityGroupIds: [config.input.securityGroupId],
-    SubnetId: config.input.subnetId,
     IamInstanceProfile: { Name: config.input.iamRoleName },
     TagSpecifications: config.tagSpecifications,
     InstanceMarketOptions: buildMarketOptions(),
