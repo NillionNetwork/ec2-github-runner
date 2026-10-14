@@ -4,7 +4,7 @@ const core = require('@actions/core');
 const config = require('./config');
 
 // User data scripts are run as the root user
-function buildUserDataScript(githubRegistrationToken, label, idx) {
+function buildUserDataScript(githubRegistrationToken, label) {
   if (config.input.runnerHomeDir) {
     // If runner home directory is specified, we expect the actions-runner software (and dependencies)
     // to be pre-installed in the AMI, so we simply cd into that directory and then start the runner
@@ -28,8 +28,8 @@ mkdir actions-runner && cd actions-runner
 echo "${config.input.preRunnerScript}" > pre-runner-script.sh
 source pre-runner-script.sh
 case $(uname -m) in aarch64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=\${ARCH}
-curl -O -L https://github.com/actions/runner/releases/download/v2.313.0/actions-runner-linux-\${RUNNER_ARCH}-2.313.0.tar.gz
-tar xzf ./actions-runner-linux-\${RUNNER_ARCH}-2.313.0.tar.gz
+curl -O -L https://github.com/actions/runner/releases/download/v2.338.0/actions-runner-linux-\${RUNNER_ARCH}-2.338.0.tar.gz
+tar xzf ./actions-runner-linux-\${RUNNER_ARCH}-2.338.0.tar.gz
 cd ..
 export RUNNER_ALLOW_RUNASROOT=1
 
@@ -71,7 +71,6 @@ async function startEc2Instance(label, githubRegistrationToken) {
     UserData: Buffer.from(userData).toString('base64'),
     SubnetId: config.input.subnetId,
     SecurityGroupIds: [config.input.securityGroupId],
-    SubnetId: config.input.subnetId,
     IamInstanceProfile: { Name: config.input.iamRoleName },
     TagSpecifications: config.tagSpecifications,
     InstanceMarketOptions: buildMarketOptions(),
